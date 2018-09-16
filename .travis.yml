@@ -1,15 +1,22 @@
 language: python
 matrix:
   include:
-    - python: 3.6
-    - python: 3.7
-      dist: xenial
-      sudo: true
-addons:
-  apt_packages:
-    - pandoc
+  - python: 3.6
+  - python: 3.7
+    dist: xenial
+    sudo: true
 install:
 - pip install pipenv
 - pipenv install --dev --system --ignore-pipfile
 script:
 - pytest
+deploy:
+  provider: pypi
+  user: khalas
+  password:
+    secure: bKA/S/8Ftj7k0jc1BFzhKMxvZQ6qm01DjG1wZIHjunOVQhgf2pr0PuQVbMCLM4NzJxJ4M3UVbQORv+FBZElJz0CcbC/cvLiaTLBhoCbn5xH/tfd3+Y5TnA/oWs9IUz3yt5z91acow458/5M3BhFUKujjZCx5G/2LgbzZQJKEH80srn+W6ZcVMoEvd5AJ4jv0P57nTO9NYi1GiV5DdNyoM9JNWaXNukILwJQ4u9Jfo2Ht7ULjVFaXB1A03+wtgM7CGn269gQIY0vvICTZlwc0xZlHWHCE1O9D2G7R2l/HY4Z8MydyQfkJGxWd6pDBfYer4zso0/Ht6NO5OcJEs5vMJpFjOxyye5LLM+cBDyGKJuKsb3pZoo9/yKhnMUIUe0ZbI0ONgOeB5LudKdbUiZAxdAEd+r1vGu3vx0p2fUBArW4OUhdKP9cY2cutg1DKb1b4ZuFOg8yGnqc1UD++EdS31qB6ffrC0exbNYy3x8eHlf2lE4DW4p8kxVs2IdLBOdWUoTJmuIPfkU2TWcNCOpxbHBoeM2ipyB5hmbgL7cO9zDJUtcAFxZl0IqAqMYGdBFM9efadB548QL3FqkCPBfAebs3yn04ieo9fCzI+D7bm4MI5FXfVtESbEN3vtkQkz7rxLew4aZUGMqNzcQhcKdjEvAsxppPcOwOEapSWRyWUOQI=
+  on:
+    tags: true
+  distributions: sdist bdist_wheel
+  skip_existing: true
+

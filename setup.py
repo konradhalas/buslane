@@ -8,7 +8,17 @@ setup(
     long_description_content_type='text/markdown',
     author='Konrad Hałas',
     author_email='halas.konrad@gmail.com',
-    py_modules=['buslane'],
+    packages=['buslane'],
     license='MIT',
     url='https://github.com/konradhalas/buslane',
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+    ],
 )
