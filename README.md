@@ -1,11 +1,13 @@
 # buslane
 
+[![Build Status](https://travis-ci.org/konradhalas/buslane.svg?branch=master)](https://travis-ci.org/konradhalas/buslane)
+
 Simple message (event/command) bus. Work in progress.
 
 ## Example
 
 
-```
+```python
 from dataclasses import dataclass
 
 from buslane.commands import Command, CommandHandler, CommandBus
