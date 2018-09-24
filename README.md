@@ -1,57 +1,130 @@
 # buslane
 
 [![Build Status](https://travis-ci.org/konradhalas/buslane.svg?branch=master)](https://travis-ci.org/konradhalas/buslane)
+[![License](https://img.shields.io/pypi/l/buslane.svg)](https://pypi.python.org/pypi/buslane/)
+[![Version](https://img.shields.io/pypi/v/buslane.svg)](https://pypi.python.org/pypi/buslane/)
+[![Python versions](https://img.shields.io/pypi/pyversions/buslane.svg)](https://pypi.python.org/pypi/buslane/)
 
-Simple message (event/command) bus. Work in progress.
+Simple message (event/command) bus.
 
-## Example
+## Installation
 
+To install `buslane`, simply use `pip` (or `pipenv`):
+
+```
+$ pip install buslane
+```
+
+## Requirements
+
+Minimum Python version supported by `buslane` is 3.6.
+
+## Quick start
 
 ```python
 from dataclasses import dataclass
 
 from buslane.commands import Command, CommandHandler, CommandBus
-from buslane.events import EventBus, Event, EventHandler
 
 
 @dataclass
 class RegisterUserCommand(Command):
-    name: str
     email: str
     password: str
 
 
-@dataclass
-class UserRegisteredEvent(Event):
-    name: str
-    email: str
-
-
 class RegisterUserCommandHandler(CommandHandler[RegisterUserCommand]):
-    def __init__(self, event_bus: EventBus):
-        self.event_bus = event_bus
 
     def handle(self, command: RegisterUserCommand) -> None:
-        ...
-        self.event_bus.publish(event=UserRegisteredEvent(
-            name=command.name,
-            email=command.email,
-        ))
+        assert command == RegisterUserCommand(
+            email='john@lennon.com',
+            password='secret',
+        )
 
 
-class UserRegisteredEventHandler(EventHandler[UserRegisteredEvent]):
-    def handle(self, event: UserRegisteredEvent) -> None:
-        ...
-
-
-event_bus = EventBus()
-event_bus.register(UserRegisteredEventHandler())
 command_bus = CommandBus()
-command_bus.register(RegisterUserCommandHandler(event_bus=event_bus))
+command_bus.register(handler=RegisterUserCommandHandler())
 command_bus.handle(command=RegisterUserCommand(
-    name='John Lennon',
     email='john@lennon.com',
     password='secret',
 ))
-
 ```
+
+## About
+
+This library makes it easier to create solutions based on messages. If you want to split event occurrence from its
+handling, `buslane` is the way to go. It supports commands (single handler) and events (0 or multiple handlers)
+approach.
+
+## Reference
+
+`buslane` uses Python type annotations to properly register handler. To create your message you have to inherit from
+`Event` or `Command` class. Handler should inherit from `EventHandler[T]` or `CommandHandler[T]`, where `T` is a class
+of your message.
+
+### Events
+
+You can register multiple or none handlers for a single event.
+
+Classes:
+
+- `Event`
+- `EventHandler[Event]`
+- `EventBus`
+
+#### Example
+
+```python
+from buslane.events import Event, EventHandler, EventBus
+
+
+class SampleEvent(Event):
+    pass
+
+
+class SampleEventHandler(EventHandler[SampleEvent]):
+    def handle(self, event: SampleEvent) -> None:
+        pass
+
+
+event_bus = EventBus()
+event_bus.register(handler=SampleEventHandler())
+event_bus.publish(event=SampleEvent())
+```
+
+### Commands
+
+You have to register only single handler for the given command.
+
+Classes:
+
+- `Command`
+- `CommandHandler[Command]`
+- `CommandBus`
+
+#### Example
+
+```python
+from buslane.commands import Command, CommandHandler, CommandBus
+
+
+class SampleCommand(Command):
+    pass
+
+
+class SampleCommandHandler(CommandHandler[SampleCommand]):
+
+    def handle(self, command: SampleCommand) -> None:
+        pass
+
+
+command_bus = CommandBus()
+command_bus.register(handler=SampleCommandHandler())
+command_bus.handle(command=SampleCommand())
+```
+
+## Authors
+
+Created by [Konrad Hałas][halas-homepage].
+
+[halas-homepage]: https://konradhalas.pl
