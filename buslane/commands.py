@@ -32,7 +32,7 @@ class CommandHandlerRegisteredException(CommandBusException):
 
 class CommandBus:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._handlers: Dict[Type[Command], CommandHandler] = {}
 
     def register(self, handler: CommandHandler):
@@ -41,8 +41,11 @@ class CommandBus:
             raise CommandHandlerRegisteredException()
         self._handlers[command_cls] = handler
 
-    def handle(self, command: Command):
+    def execute(self, command: Command) -> None:
         try:
-            self._handlers[type(command)].handle(command)
+            self.handle(command=command, handler=self._handlers[type(command)])
         except KeyError:
             raise MissingCommandHandlerException()
+
+    def handle(self, command: Command, handler: CommandHandler) -> None:
+        handler.handle(command)

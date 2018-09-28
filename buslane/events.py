@@ -21,12 +21,15 @@ class EventHandler(abc.ABC, Generic[E]):
 
 class EventBus:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._handlers: Dict[Type[Event], List[EventHandler]] = defaultdict(list)
 
-    def register(self, handler: EventHandler):
+    def register(self, handler: EventHandler) -> None:
         self._handlers[get_generic_arg(type(handler), Event)].append(handler)
 
-    def publish(self, event: Event):
+    def publish(self, event: Event) -> None:
         for handler in self._handlers[type(event)]:
-            handler.handle(event)
+            self.handle(event=event, handler=handler)
+
+    def handle(self, event: Event, handler: EventHandler) -> None:
+        handler.handle(event)

@@ -22,7 +22,7 @@ def test_handle_command():
     bus.register(handler)
     command = SampleCommand()
 
-    bus.handle(command)
+    bus.execute(command)
 
     handler.handle.assert_called_once_with(command)
 
@@ -31,7 +31,7 @@ def test_handle_command_without_handler():
     bus = CommandBus()
 
     with pytest.raises(MissingCommandHandlerException):
-        bus.handle(SampleCommand())
+        bus.execute(SampleCommand())
 
 
 def test_register_command_handler_twice():
