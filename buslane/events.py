@@ -2,7 +2,7 @@ import abc
 from collections import defaultdict
 from typing import TypeVar, Generic, Type, Dict, List
 
-from buslane.utils import get_generic_arg
+from buslane.utils import get_message_cls
 
 
 class Event:
@@ -25,7 +25,7 @@ class EventBus:
         self._handlers: Dict[Type[Event], List[EventHandler]] = defaultdict(list)
 
     def register(self, handler: EventHandler) -> None:
-        self._handlers[get_generic_arg(type(handler), Event)].append(handler)
+        self._handlers[get_message_cls(type(handler), Event)].append(handler)
 
     def publish(self, event: Event) -> None:
         for handler in self._handlers[type(event)]:

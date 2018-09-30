@@ -75,6 +75,8 @@ parameters. Such class is very easy to test, you don't have to `mock.patch` ever
 Last but not least - the `buslane` API is simple and well defined. You can extend it easily, e.g. log all of your
 messages or store them in a database.
 
+It can be used as a foundation of your CQRS-based system.
+
 ## Reference
 
 `buslane` uses Python type annotations to properly register handler. To create your message you have to inherit from
@@ -91,6 +93,10 @@ Classes:
 - `EventHandler[Event]`
 - `EventBus`
 
+Exceptions:
+
+- `WrongHandlerException`
+
 #### Example
 
 ```python
@@ -102,6 +108,7 @@ class SampleEvent(Event):
 
 
 class SampleEventHandler(EventHandler[SampleEvent]):
+
     def handle(self, event: SampleEvent) -> None:
         pass
 
@@ -120,6 +127,12 @@ Classes:
 - `Command`
 - `CommandHandler[Command]`
 - `CommandBus`
+
+Exceptions:
+
+- `MissingCommandHandlerException`
+- `CommandHandlerRegisteredException`
+- `WrongHandlerException`
 
 #### Example
 
@@ -160,7 +173,7 @@ class CustomEventBus(EventBus):
         self.logger = logging.getLogger()
         self.executor = ThreadPoolExecutor(max_workers=workers)
 
-    def handle(self, event: Event, handler: EventHandler):
+    def handle(self, event: Event, handler: EventHandler) -> None:
         self.logger.info(f'Handling event {event} by {handler}')
         self.executor.submit(handler.handle, event)
 ```

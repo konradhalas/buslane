@@ -1,6 +1,8 @@
 from typing import Generic, TypeVar
 
-from buslane.utils import get_generic_arg
+import pytest
+
+from buslane.utils import get_message_cls, WrongHandlerException
 
 
 class BaseMessage:
@@ -22,5 +24,14 @@ class Handler(BaseHandler[Message]):
     pass
 
 
-def test_get_generic_arg():
-    assert get_generic_arg(generic_cls=Handler, param_cls=BaseMessage) == Message
+class WrongHandler(BaseHandler):
+    pass
+
+
+def test_get_message_cls_should_return_correct_class():
+    assert get_message_cls(handler_cls=Handler, base_message_cls=BaseMessage) == Message
+
+
+def test_get_message_cls_should_raise_exception():
+    with pytest.raises(WrongHandlerException):
+        assert get_message_cls(handler_cls=WrongHandler, base_message_cls=BaseMessage)

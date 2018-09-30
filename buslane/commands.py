@@ -1,7 +1,7 @@
 import abc
 from typing import TypeVar, Generic, Type, Dict
 
-from buslane.utils import get_generic_arg
+from buslane.utils import get_message_cls
 
 
 class Command:
@@ -36,7 +36,7 @@ class CommandBus:
         self._handlers: Dict[Type[Command], CommandHandler] = {}
 
     def register(self, handler: CommandHandler):
-        command_cls = get_generic_arg(type(handler), Command)
+        command_cls = get_message_cls(type(handler), Command)
         if command_cls in self._handlers:
             raise CommandHandlerRegisteredException()
         self._handlers[command_cls] = handler
