@@ -27,7 +27,7 @@ from dataclasses import dataclass
 from buslane.commands import Command, CommandHandler, CommandBus
 
 
-@dataclass
+@dataclass(frozen=True)
 class RegisterUserCommand(Command):
     email: str
     password: str
@@ -80,8 +80,10 @@ It can be used as a foundation of your CQRS-based system.
 ## Reference
 
 `buslane` uses Python type annotations to properly register handler. To create your message you have to inherit from
-`Event` or `Command` class. Handler should inherit from `EventHandler[T]` or `CommandHandler[T]`, where `T` is a class
-of your message.
+`Event` or `Command` class. I recommend to use `dataclasses` module from Python 3.7 (or from PyPI) - command/event
+should be just a simple bundle of immutable data, `dataclass` decorator makes it easy to create such class.
+
+Handler should inherit from `EventHandler[T]` or `CommandHandler[T]`, where `T` is a class of your message.
 
 ### Events
 
@@ -177,6 +179,8 @@ class CustomEventBus(EventBus):
         self.logger.info(f'Handling event {event} by {handler}')
         self.executor.submit(handler.handle, event)
 ```
+
+**Note**: This type of customization will be deprecated in the next release in favor of a plugins architecture.
 
 ## Authors
 
